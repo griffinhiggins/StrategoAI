@@ -6,7 +6,7 @@ const [
     Data
 ] = [
     require(`clear`),
-    require("cli-color"),
+    require(`cli-color`),
     require(`./components/Board`),
     require(`./components/Player`),
     require(`./components/Data`)
@@ -22,7 +22,7 @@ class Game {
         this.players.forEach((player) => {
             for (let row = ((player.color) ? 0 : 6); row < ((player.color) ? 4 : 10); row++) {
                 for (let col = 0; col < this.board.length; col++) {
-                    this.board.place(player, `${player.getRandomPiece()},${row},${col}`)
+                    this.board.place(player, `${player.getRandomPiece()},${row},${col}`);
                 }
             }
         });
@@ -30,31 +30,34 @@ class Game {
     play() {
         let i = 0,
             p = this.players,
-            orig,
-            dest;
+            orig, dest;
         while (!p[i].win) {
             do {
-                this.print();
+
+                this.print(p[i]);
                 p[i].print(p[i].name);
+                console.log(this.board.canMoveSet(p[i]));
                 orig = p[i].getOrig();
-                this.print(orig);
+
+                this.print(p[i]);
                 p[i].print(p[i].name);
                 dest = p[i].getDest();
+
             }
             while (!this.board.move(p[i], p[Math.abs(i - 1)], [orig, dest]));
             i = Math.abs(i - 1);
         }
         this.print();
-        p[i].hasWon();
+        console.log(`\n${p[i].name} has won the game...\nWINNNER WINNER CHICKEN DINNER`);
     }
-    print(orig) {
+    print(player, orig) {
         clear();
         let stats = [],
             p = this.players;
         Data.pieces.forEach((e, i) => {
             stats.push(`\t  ${e[1]} [${clc.redBright(p[1].numPerRank[i])} : ${clc.cyanBright(p[0].numPerRank[i])}]`);
         });
-        this.board.print(stats, orig);
+        this.board.print(player, stats, orig);
     }
 }
 let game = new Game();

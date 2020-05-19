@@ -6,7 +6,7 @@ const [
 ] = [
     require(`./Piece`),
     require(`./Data`),
-    require("cli-color"),
+    require(`cli-color`),
     require(`prompt-sync`)({
         history: require(`prompt-sync-history`)(`moves.txt`, 10),
         sigint: true
@@ -43,9 +43,6 @@ class Player {
     }
     getRandomPiece() {
         return this.inactive[Math.floor(Math.random() * this.inactive.length)].rank;
-    }
-    hasWon() {
-        this.print(`\n${this.name} has won the game...\nWINNNER WINNER CHICKEN DINNER`);
     }
     getOrig() {
         return prompt(`Orig: `);
