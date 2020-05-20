@@ -15,10 +15,11 @@ const [
 class Player {
     constructor(name, color) {
         this.color = color;
-        this.name = (name == ``) ? prompt(`What is your name? `) : name;
+        this.name = this.colorStr((name == ``) ? prompt(`What is your name? `) : name);
         this.inactive = [];
         this.numPerRank = [];
         this.win = false;
+        this.moves = [];
         this.init();
     }
     init() {
@@ -45,30 +46,40 @@ class Player {
         return this.inactive[Math.floor(Math.random() * this.inactive.length)].rank;
     }
     getOrig() {
-        return prompt(`Orig: `);
+        return prompt(`Orig: `).split(`,`).map(Number);
     }
-    getDest() {
-        return prompt(`Dest: `)
+    getDest(orig) {
+        let dest = prompt(`Dest: `),
+            [row0, col0] = orig,
+            row1, col1;
+        switch (dest) {
+            case `u`:
+                row1 = row0 - 1;
+                col1 = col0;
+                break;
+            case `d`:
+                row1 = row0 + 1;
+                col1 = col0;
+                break;
+            case `l`:
+                row1 = row0;
+                col1 = col0 - 1;
+                break;
+            case `r`:
+                row1 = row0;
+                col1 = col0 + 1;
+                break;
+            default:
+                return dest.split(`,`).map(Number);
+        }
+        return [row1, col1]
     }
     kill(piece) {
         this.inactive.push(piece);
         this.numPerRank[piece.rank]--;
     }
-    print(str) {
-        console.log((this.color) ? clc.redBright(str) : clc.cyanBright(str));
+    colorStr(str) {
+        return (this.color) ? clc.redBright(str) : clc.cyanBright(str);
     }
 }
 module.exports = Player;
-
-
-
-
-
-
-
-
-
-// move() {
-
-//     return [prompt(`Orig: `), prompt(`Dest: `)];
-// }

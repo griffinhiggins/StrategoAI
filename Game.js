@@ -2,19 +2,19 @@ const [
     clear,
     clc,
     Board,
-    Player,
+    RandomPlayer,
     Data
 ] = [
     require(`clear`),
     require(`cli-color`),
     require(`./components/Board`),
-    require(`./components/Player`),
+    require(`./components/RandomPlayer`),
     require(`./components/Data`)
 ];
 class Game {
     constructor() {
         this.board = new Board();
-        this.players = [new Player(`player1`, false), new Player(`player2`, true)];
+        this.players = [new RandomPlayer(`RandomPlayer1`, false), new RandomPlayer(`RandomPlayer2`, true)];
         this.init();
         this.play();
     }
@@ -30,50 +30,41 @@ class Game {
     play() {
         let i = 0,
             p = this.players,
-            orig, dest;
-        while (!p[i].win) {
-            do {
-
-                this.print(p[i]);
-                p[i].print(p[i].name);
-                console.log(this.board.canMoveSet(p[i]));
-                orig = p[i].getOrig();
-
-                this.print(p[i]);
-                p[i].print(p[i].name);
-                dest = p[i].getDest();
-
+            orig,
+            dest,
+            winner,
+            str = clc.blueBright(`Capture`);
+        exit:
+            while (true) {
+                do {
+                    if (p[i].win) {
+                        str = clc.blueBright(`Capture`);
+                        break exit;
+                    }
+                    if (this.board.canMoveSet(p[i])) {
+                        this.print(false);
+                        console.log(p[i].name);
+                        [orig, dest] = p[i].moveRandom();
+                    } else {
+                        str = clc.blueBright(`Submission`);
+                        i = Math.abs(i - 1);
+                        break exit;
+                    }
+                }
+                while (!this.board.move(p[i], p[Math.abs(i - 1)], [orig, dest]));
+                i = Math.abs(i - 1);
             }
-            while (!this.board.move(p[i], p[Math.abs(i - 1)], [orig, dest]));
-            i = Math.abs(i - 1);
-        }
-        this.print();
-        console.log(`\n${p[i].name} has won the game...\nWINNNER WINNER CHICKEN DINNER`);
+        this.print(true);
+        console.log(p[i].colorStr(`${p[i].name} has won the game by ${str}`));
     }
-    print(player, orig) {
+    print(win) {
         clear();
         let stats = [],
             p = this.players;
         Data.pieces.forEach((e, i) => {
             stats.push(`\t  ${e[1]} [${clc.redBright(p[1].numPerRank[i])} : ${clc.cyanBright(p[0].numPerRank[i])}]`);
         });
-        this.board.print(player, stats, orig);
+        this.board.print(stats, win);
     }
 }
 let game = new Game();
-
-
-
-
-
-// init(player, color) {
-// clear();
-// player = new Player(null, color);
-// while (player.inactive.length) {
-//     clear();
-//     this.board.print();
-//     player.print();
-//     this.board.place(player, prompt(`  Please enter rank & coordiantes: `));
-// }
-// this.board.print();
-// }

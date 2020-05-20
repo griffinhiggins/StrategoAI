@@ -22,10 +22,12 @@ class Board {
         ];
         this.length = 10;
     }
-    print(player, stats, orig) {
-        let row, str, temp, bg = false,
-            grid = EMPTY;
-        grid += `      0  1  2  3  4  5  6  7  8  9\t\tSCORE BOARD\n      -  -  -  -  -  -  -  -  -  -${stats[0]}\n`;
+    print(stats, win) {
+        let row,
+            str,
+            temp,
+            bg = false,
+            grid = `      0  1  2  3  4  5  6  7  8  9\t\tSCORE BOARD\n      -  -  -  -  -  -  -  -  -  -${stats[0]}\n`;
         for (let i = 0; i < 10; i++) {
             row = EMPTY;
             str = EMPTY;
@@ -33,11 +35,9 @@ class Board {
                 temp = this.board[i][j];
                 if (temp == EMPTY) {
                     str = `   `;
-                }
-                // else if (temp.color != player.color && !temp.showRank) {
-                //     str = ` ? `
-                // } 
-                else {
+                } else if (temp.color == true && !temp.showRank && !win) {
+                    str = ` ? `
+                } else {
                     switch (temp.rank) {
                         case 0:
                             str = ` F `;
@@ -63,7 +63,7 @@ class Board {
         console.log(grid);
     }
     place(player, placement) {
-        let [rank, row, col] = placement.split(`,`), piece = player.getPiece(rank);
+        let [rank, row, col] = placement.split(`,`).map(Number), piece = player.getPiece(rank);
         if ((piece == null) || !(this.inBounds(row, col)) || (player.color && row > 3) || (!player.color && row < 6)) {
             return;
         }
@@ -78,27 +78,9 @@ class Board {
         }
     }
     move(origPlayer, destPlayer, move) {
-        let [orig, dest] = move, [row0, col0] = orig.split(`,`).map(Number), row1, col1;
-        switch (dest) {
-            case `u`:
-                row1 = row0 - 1;
-                col1 = col0;
-                break;
-            case `d`:
-                row1 = row0 + 1;
-                col1 = col0;
-                break;
-            case `l`:
-                row1 = row0;
-                col1 = col0 - 1;
-                break;
-            case `r`:
-                row1 = row0;
-                col1 = col0 + 1;
-                break;
-            default:
-                [row1, col1] = dest.split(`,`).map(Number);
-        }
+        let [orig, dest] = move,
+        [row0, col0] = orig,
+        [row1, col1] = dest;
 
         if (!this.inBounds(row0, col0) || !this.inBounds(row1, col1)) {
             console.log(clc.red.bold(`${row0,col0} or ${row1,col1} are not in bounds`));
@@ -106,7 +88,6 @@ class Board {
         } else {
             orig = this.board[row0][col0], dest = this.board[row1][col1];
         }
-
         if (orig == EMPTY) {
             console.log(clc.red.bold(`The piece you are trying to move at ${row0},${col0} doesn't exist`));
             return false;
@@ -130,9 +111,7 @@ class Board {
             orig.setPosition(row1, col1);
             return true;
         } else {
-            if (dest.rank == 0) {
-                player.win = true;
-            } else if (orig.rank != 3 && dest.rank == 1) {
+            if (orig.rank != 3 && dest.rank == 1) {
                 origPlayer.kill(orig);
             } else if (orig.rank == 11 && dest.rank != 10) {
                 origPlayer.kill(orig);
@@ -140,6 +119,12 @@ class Board {
                 destPlayer.kill(dest);
                 this.board[row1][col1] = orig;
                 orig.setPosition(row1, col1);
+
+                if (dest.rank == 0) {
+                    orig.capturePiece = true;
+                    origPlayer.win = true
+                }
+
             } else if (orig.rank < dest.rank) {
                 origPlayer.kill(orig);
             } else if (orig.rank == dest.rank) {
@@ -148,6 +133,8 @@ class Board {
                 this.board[row1][col1] = EMPTY;
             }
             this.board[row0][col0] = EMPTY;
+            dest.showRank = true;
+            orig.showRank = true;
             return true;
         }
     }
@@ -156,70 +143,49 @@ class Board {
         return bounds[row] != undefined && bounds[col] != undefined && !this.isMid(row, col)
     }
     canMoveSet(player) {
-        let temp, add, set = [];
+        let temp, move, set = [];
         for (let i = 0; i < this.board.length; i++) {
             for (let j = 0; j < this.board.length; j++) {
-                add = false;
+                move = [];
                 temp = this.board[i][j];
                 if (temp != EMPTY && temp.rank > 1 && temp.color == player.color) {
                     if (this.inBounds(i - 1, j)) {
-                        if (this.board[i - 1][j] == EMPTY) {
-                            // temp.range[0] = 1;
-                            add = true
+                        if (this.board[i - 1][j] == EMPTY || this.board[i - 1][j].color != this.board[i][j].color) {
+                            move.push([i - 1, j]);
                         }
                     }
                     if (this.inBounds(i + 1, j)) {
-                        if (this.board[i + 1][j] == EMPTY) {
-                            // temp.range[1] = 1;
-                            add = true
+                        if (this.board[i + 1][j] == EMPTY || this.board[i + 1][j].color != this.board[i][j].color) {
+                            move.push([i + 1, j]);
                         }
                     }
                     if (this.inBounds(i, j - 1)) {
-                        if (this.board[i][j - 1] == EMPTY) {
-                            // temp.range[2] = 1;
-                            add = true
+                        if (this.board[i][j - 1] == EMPTY || this.board[i][j - 1].color != this.board[i][j].color) {
+                            move.push([i, j - 1]);
                         }
                     }
                     if (this.inBounds(i, j + 1)) {
-                        if (this.board[i][j + 1] == EMPTY) {
-                            // temp.range[3] = 1;
-                            add = true
+                        if (this.board[i][j + 1] == EMPTY || this.board[i][j + 1].color != this.board[i][j].color) {
+                            move.push([i, j + 1]);
                         }
                     }
-                    if (add) {
-                        set.push(temp);
+                    if (move.length) {
+                        set.push({
+                            coordinate: temp.getPosition(),
+                            move: move
+                        });
                     }
                 }
             }
         }
-        return set;
+        if (!set.length) {
+            return false;
+        }
+        player.moves = set;
+        return true;
     }
     isMid(i, j) {
         return ([4, 5].includes(i) && [2, 3, 6, 7].includes(j));
     }
 }
 module.exports = Board;
-
-
-
-
-
-
-
-
-
-
-
-// let row0, col0;
-// if (orig != undefined) {
-//     [
-//         row0,
-//         col0,
-//     ] = orig.split(`,`).map(Number),
-//         orig = (this.board[row0][col0] == EMPTY) ? undefined : this.board[row0][col0];
-// }
-// let bounds = (orig != undefined && orig.rank != 2) ? [i - 1, i + 1].includes(row0) && j == col0 || [j - 1, j + 1].includes(col0) && i == row0 : i == row0 || j == col0;
-// bg = bounds
-// if (temp.color != undefined && orig != undefined) {
-//     bg &= temp.color != orig.color
-// }
