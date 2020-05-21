@@ -4,9 +4,9 @@ class Piece {
         this.name = name;
         this.color = color;
         this.showRank = false;
+        this.capturePiece = false;
         this.row = 0;
         this.col = 0;
-        this.capturePiece = false;
     }
     setPosition(row, col) {
         this.row = row;
