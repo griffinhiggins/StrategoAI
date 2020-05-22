@@ -6,8 +6,8 @@ class RandomPlayer extends Player {
     }
     move() {
         let move = this.moves[Math.floor(Math.random() * this.moves.length)],
-            orig = move.coordinate,
-            dest = move.move[Math.floor(Math.random() * move.move.length)];
+            orig = move.orig,
+            dest = move.dests[Math.floor(Math.random() * move.dests.length)];
         return [orig, dest];
     }
     getPiece() {

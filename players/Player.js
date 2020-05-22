@@ -31,6 +31,16 @@ class Player {
             }
         });
     }
+    getPieceByRank(rank) {
+        for (let i = 0; i < this.inactive.length; i++) {
+            if (this.inactive[i].rank == rank) {
+                let temp = this.inactive[i];
+                this.inactive.splice(i, 1);
+                return temp;
+            }
+        }
+        return null
+    }
     removePiece(piece) {
         this.inactive.push(piece);
         this.numPerRank[piece.rank]--;

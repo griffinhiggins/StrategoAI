@@ -8,6 +8,9 @@ class Piece {
         this.row = 0;
         this.col = 0;
     }
+    getRank() {
+        return (this.showRank) ? this.rank : null;
+    }
     setPosition(row, col) {
         this.row = row;
         this.col = col;

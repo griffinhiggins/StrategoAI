@@ -1,4 +1,7 @@
-const Player = require(`./Player`);
+const [Player, prompt] = [require(`./Player`), require(`prompt-sync`)({
+    history: require(`prompt-sync-history`)(`moves.txt`, 10),
+    sigint: true
+})];
 
 class RegularPlayer extends Player {
     constructor(name, color) {
@@ -6,7 +9,7 @@ class RegularPlayer extends Player {
     }
     move() {
         let orig = this.getOrig(),
-            dest = getDest(orig);
+            dest = this.getDest(orig);
         return [orig, dest];
     }
     getOrig() {
@@ -38,15 +41,11 @@ class RegularPlayer extends Player {
         }
         return [row1, col1]
     }
-    getPiece(rank) {
-        for (let i = 0; i < this.inactive.length; i++) {
-            if (this.inactive[i].rank == rank) {
-                let temp = this.inactive[i];
-                this.inactive.splice(i, 1);
-                return temp;
-            }
-        }
-        return null
+    getPiece() {
+        let i = Math.floor(Math.random() * this.inactive.length),
+            temp = this.inactive[i];
+        this.inactive.splice(i, 1);
+        return temp;
     }
 }
 module.exports = RegularPlayer;
