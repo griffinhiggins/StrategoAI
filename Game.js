@@ -14,13 +14,44 @@ const [
     require(`./players/HardLogicPlayer`),
     require(`./players/RegularPlayer`),
     require(`./players/RandomPlayer`)
-];
+],
+[blue, red] = [false, true],
+stats = {
+    p0: {
+        color: blue,
+        name: null,
+        captureRatio: 0,
+        submissionRatio: 0,
+        total: 0,
+        captures: 0,
+        submissions: 0
+
+    },
+    p1: {
+        color: red,
+        name: null,
+        captureRatio: 0,
+        submissionRatio: 0,
+        total: 0,
+        captures: 0,
+        submissions: 0
+    },
+    total: {
+        color: null,
+        name: 'Total',
+        captureRatio: 0,
+        submissionRatio: 0,
+        total: 0,
+        captures: 0,
+        submissions: 0
+    },
+};
 class Game {
-    constructor(players) {
+    constructor(players, sim) {
         this.board = new Board();
         this.players = players;
         this.init();
-        this.run();
+        sim ? this.sim() : this.play();
     }
     init() {
         this.players.forEach((player) => {
@@ -34,8 +65,8 @@ class Game {
     test() {
         let p = this.players;
         //?KEEP THESE 2's so the game doesnt end
-        this.board.place(p[1], [p[1].getPieceByRank(2), 0, 0]);
-        this.board.place(p[0], [p[0].getPieceByRank(2), 9, 9]);
+        // this.board.place(p[1], [p[1].getPieceByRank(1), 0, 0]);
+        // this.board.place(p[0], [p[0].getPieceByRank(1), 9, 9]);
 
         //*TEST: orig rank == dest rank --> PASS
         // this.board.place(p[1], [p[1].getPieceByRank(8), 3, 0]);
@@ -50,15 +81,20 @@ class Game {
         // this.board.place(p[0], [p[0].getPieceByRank(8), 4, 1]);
 
         //*TEST: orig rank = 3 || 4 && dest rank ==  1 --> PASS
-        // this.board.place(p[1], [p[1].getPieceByRank(1), 3, 0]);
-        // this.board.place(p[0], [p[0].getPieceByRank(3), 4, 0]);
-        // this.board.place(p[0], [p[0].getPieceByRank(4), 3, 1]);
+        this.board.place(p[1], [p[1].getPieceByRank(5), 3, 6]);
+        this.board.place(p[1], [p[1].getPieceByRank(2), 4, 1]);
+        this.board.place(p[1], [p[1].getPieceByRank(8), 2, 1]);
+        this.board.place(p[0], [p[0].getPieceByRank(5), 3, 1]);
+        this.board.place(p[0], [p[0].getPieceByRank(7), 3, 7]);
+        // this.board.board[4][1].showRank = true;
+        // this.board.board[3][6].showRank = true;
 
         //*TEST: orig rank = 11  dest rank ==  4 || 10 --> PASS
         // this.board.place(p[1], [p[1].getPieceByRank(11), 3, 0]);
         // this.board.place(p[0], [p[0].getPieceByRank(4), 4, 0]);
         // this.board.place(p[0], [p[0].getPieceByRank(10), 3, 1]);
 
+        //!TEST IF A SPY HITS A BOMB THAT IT changes the showRank to true
 
     }
     play() {
@@ -80,7 +116,7 @@ class Game {
                 [i, j] = [j, i];
             }
     }
-    run() {
+    sim() {
         let [i, j] = [0, 1],
         p = this.players;
         Exit:
@@ -88,11 +124,11 @@ class Game {
                 if (this.board.canMoveSet(p[i])) {
                     while (!this.board.move(p[i], p[j]));
                 } else {
-                    (p[j].name == p[0].name) ? stats.HLP.captures++: stats.RP.captures++;
+                    (p[j].color == stats.p0.color) ? stats.p0.captures++: stats.p1.captures++;
                     break Exit;
                 }
                 if (p[i].win) {
-                    (p[i].name == p[0].name) ? stats.HLP.submissions++: stats.RP.submissions++;
+                    (p[i].color == stats.p0.color) ? stats.p0.submissions++: stats.p1.submissions++;
                     break Exit;
                 }
                 [i, j] = [j, i];
@@ -107,7 +143,6 @@ class Game {
             stats = [],
             p = this.players;
         Data.pieces.forEach((e, i) => {
-
             blueRank = p[0].numPerRank[i];
             redRank = p[1].numPerRank[i];
             eq = (blueRank == redRank) ? "=" : (blueRank > redRank) ? ">" : "<";
@@ -117,40 +152,70 @@ class Game {
     }
 }
 
-// console.time("TIME");
-// let game = new Game([new RegularPlayer(`Player1`, blue), new RegularPlayer(`Player2`, red)]);
-// let game = new Game([new RegularPlayer(`RegularPlayer`, blue), new RandomPlayer(`HardLogicPlayer `, red)]);
-// let game = new Game([new RandomPlayer(`RandomPlayer`, blue), new RandomPlayer(`RandomPlayer`, red)]);
-// let game = new Game([new HardLogicPlayer(`HardLogicPlayer`, blue), new HardLogicPlayer(`HardLogicPlayer `, red)]);
+function performace(numSim) {
+    let game,
+        i = 0;
+    console.log(`RUNNING...`);
 
-let [blue, red] = [false, true],
-stats = {
-        HLP: {
-            captures: 0,
-            submissions: 0,
-            total: 0
-        },
-        RP: {
-            captures: 0,
-            submissions: 0,
-            total: 0
-        },
-        total: {
-            captures: 0,
-            submissions: 0,
-            total: 0
+
+    while (i < numSim) {
+        if (i % 10 == 0) {
+            console.log(i);
         }
-    },
-    i = 0,
-    game
-while (i < 1000) {
-    console.log(i);
-    game = new Game([new HardLogicPlayer(`HardLogicPlayer`, blue), new RandomPlayer(`RandomPlayer`, red)]);
-    i++;
+        stats.p0.name = 'RandomPlayer';
+        stats.p1.name = 'HardLogicPlayer';
+        game = new Game([
+            new RandomPlayer(stats.p0.name, stats.p0.color),
+            new HardLogicPlayer(stats.p1.name, stats.p1.color)
+        ], true);
+        i++;
+    }
+
+    stats.p0.total = stats.p0.captures + stats.p0.submissions;
+    stats.p1.total = stats.p1.captures + stats.p1.submissions;
+
+    stats.total.captures = stats.p0.captures + stats.p1.captures;
+    stats.total.submissions = stats.p0.submissions + stats.p1.submissions;
+    stats.total.total = stats.total.captures + stats.total.submissions;
+
+    stats.total.captureRatio = Math.floor((stats.total.captures / stats.total.total) * 100);
+    stats.total.submissionRatio = Math.floor((stats.total.submissions / stats.total.total) * 100);
+
+    stats.p0.captureRatio = Math.floor((stats.p0.captures / stats.total.total) * 100);
+    stats.p1.captureRatio = Math.floor((stats.p1.captures / stats.total.total) * 100);
+
+    stats.p0.submissionRatio = Math.floor((stats.p0.submissions / stats.total.total) * 100);
+    stats.p1.submissionRatio = Math.floor((stats.p1.submissions / stats.total.total) * 100);
+
+    console.table(stats);
+    // console.log(stats);
 }
-stats.HLP.total = stats.HLP.captures + stats.HLP.submissions;
-stats.RP.total = stats.RP.captures + stats.RP.submissions;
-stats.total.captures = (stats.HLP.captures >= stats.RP.captures) ? stats.RP.captures / stats.HLP.captures : stats.HLP.captures / stats.RP.captures;
-stats.total.submissions = (stats.HLP.submissions >= stats.RP.submissions) ? stats.RP.submissions / stats.HLP.submissions : stats.HLP.submissions / stats.RP.submissions;
-stats.total.total = (stats.HLP.total >= stats.RP.total) ? stats.RP.total / stats.HLP.total : stats.HLP.total / stats.RP.total;
-console.log(stats);
+
+function play(players) {
+    game = new Game(players, false);
+}
+
+function main() {
+    performace(1000);
+    // play([
+    //     new HardLogicPlayer(`HardLogicPlayer1`, false),
+    //     new HardLogicPlayer(`HardLogicPlayer2`, true)
+    // ]);
+    // play([new HardLogicPlayer(`HardLogicPlayer1`, false),
+    //     new RegularPlayer(`RegularPlayer2`, true)
+    // ]);
+    // play([new HardLogicPlayer(`HardLogicPlayer`, false),
+    //     new RandomPlayer(`RandomPlayer`, true)
+    // ]);
+}
+
+main();
+
+// performace @ 1000 games
+// ┌─────────┬───────┬───────────────────┬──────────────┬─────────────────┬───────┬──────────┬─────────────┐
+// │ (index) │ color │       name        │ captureRatio │ submissionRatio │ total │ captures │ submissions │
+// ├─────────┼───────┼───────────────────┼──────────────┼─────────────────┼───────┼──────────┼─────────────┤
+// │   p0    │ false │  'RandomPlayer'   │      0       │       42        │  427  │    3     │     424     │
+// │   p1    │ true  │ 'HardLogicPlayer' │      57      │        0        │  573  │   573    │      0      │
+// │  total  │ null  │      'Total'      │      57      │       42        │ 1000  │   576    │     424     │
+// └─────────┴───────┴───────────────────┴──────────────┴─────────────────┴───────┴──────────┴─────────────┘

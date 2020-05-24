@@ -1,0 +1,27 @@
+[blue, red] = [false, true];
+playerList = [
+    [
+        new RegularPlayer(`RegularPlayer0`, blue),
+        new RegularPlayer(`RegularPlayer1`, red)
+    ],
+    [
+        new RegularPlayer(`RegularPlayer0`, blue),
+        new RandomPlayer(`RandomPlayer1`, red)
+    ],
+    [
+        new RegularPlayer(`RegularPlayer0`, blue),
+        new HardLogicPlayer(`HardLogicPlayer1`, red)
+    ],
+    [
+        new RandomPlayer(`RandomPlayer0`, blue),
+        new RandomPlayer(`RandomPlayer1`, red)
+    ],
+    [
+        new RandomPlayer(`RandomPlayer0`, blue),
+        new HardLogicPlayer(`HardLogicPlayer1`, red)
+    ],
+    [
+        new HardLogicPlayer(`HardLogicPlayer0`, blue),
+        new HardLogicPlayer(`HardLogicPlayer1`, red)
+    ]
+];
