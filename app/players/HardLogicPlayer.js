@@ -12,6 +12,8 @@ class HardLogicPlayer extends Player {
             dest,
             temp = null,
             bestMove = Infinity,
+            empty,
+            // inDanger = false,
             diff,
             rank,
             row0,
@@ -24,24 +26,36 @@ class HardLogicPlayer extends Player {
             m.dests = m.dests.filter(d => {
                 [row1, col1] = d;
                 dest = board[row1][col1];
-                if (dest != ``) {
-                    rank = dest.getRank();
-                    if (rank != null && orig.rank > rank && rank != 1) {
+                if (dest == ``) {
+                    empty = [
+                        [row0, col0],
+                        [row1, col1]
+                    ];
+                    return true;
+                } else if ((rank = dest.getRank()) == null) {
+                    return false
+                } else {
+                    if (orig.rank > rank && rank != 1) {
                         bestMove = diff;
                         temp = [
                             [row0, col0],
                             [row1, col1]
                         ];
-                        return true
                     }
-                } else {
-                    return true;
+                    // else {
+                    //     inDanger = true;
+                    //     return false;
+                    // }
                 }
+                return true
             });
             if (m.dests.length > 0) {
                 return true;
             }
         });
+        // if (inDanger) {
+
+        // }
         // console.log(`\POST-PRUNING...`);
         // this.moves.forEach((e) => {
         //     console.log(e);

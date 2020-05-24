@@ -5,7 +5,7 @@ const [
     prompt
 ] = [
     require(`../components/Piece`),
-    require(`../components/Data`),
+    require(`../Data/Data`),
     require(`cli-color`),
     require(`prompt-sync`)({
         history: require(`prompt-sync-history`)(`moves.txt`, 10),
@@ -20,6 +20,7 @@ class Player {
         this.numPerRank = [];
         this.moves = [];
         this.win = false;
+        this.flag = [];
         this.init();
     }
     init() {

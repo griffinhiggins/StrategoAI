@@ -10,42 +10,27 @@ const [
     require(`clear`),
     require(`cli-color`),
     require(`./components/Board`),
-    require(`./components/Data`),
+    require(`./Data/Data`),
     require(`./players/HardLogicPlayer`),
     require(`./players/RegularPlayer`),
     require(`./players/RandomPlayer`)
 ],
-[blue, red] = [false, true],
-stats = {
-    p0: {
-        color: blue,
-        name: null,
-        captureRatio: 0,
-        submissionRatio: 0,
-        total: 0,
-        captures: 0,
-        submissions: 0
+blue = false, red = true,
+    stats = {
+        p0: {
+            color: blue,
+            name: null,
+            captures: 0,
+            submissions: 0
 
-    },
-    p1: {
-        color: red,
-        name: null,
-        captureRatio: 0,
-        submissionRatio: 0,
-        total: 0,
-        captures: 0,
-        submissions: 0
-    },
-    total: {
-        color: null,
-        name: 'Total',
-        captureRatio: 0,
-        submissionRatio: 0,
-        total: 0,
-        captures: 0,
-        submissions: 0
-    },
-};
+        },
+        p1: {
+            color: red,
+            name: null,
+            captures: 0,
+            submissions: 0
+        },
+    };
 class Game {
     constructor(players, sim) {
         this.board = new Board();
@@ -174,18 +159,19 @@ function performace(numSim) {
     stats.p0.total = stats.p0.captures + stats.p0.submissions;
     stats.p1.total = stats.p1.captures + stats.p1.submissions;
 
-    stats.total.captures = stats.p0.captures + stats.p1.captures;
-    stats.total.submissions = stats.p0.submissions + stats.p1.submissions;
-    stats.total.total = stats.total.captures + stats.total.submissions;
 
-    stats.total.captureRatio = Math.floor((stats.total.captures / stats.total.total) * 100);
-    stats.total.submissionRatio = Math.floor((stats.total.submissions / stats.total.total) * 100);
+    // stats.total.captures = stats.p0.captures + stats.p1.captures;
+    // stats.total.submissions = stats.p0.submissions + stats.p1.submissions;
+    // stats.total.total = stats.total.captures + stats.total.submissions;
 
-    stats.p0.captureRatio = Math.floor((stats.p0.captures / stats.total.total) * 100);
-    stats.p1.captureRatio = Math.floor((stats.p1.captures / stats.total.total) * 100);
+    // stats.total.captureRatio = Math.floor((stats.total.captures / stats.total.total) * 100);
+    // stats.total.submissionRatio = Math.floor((stats.total.submissions / stats.total.total) * 100);
 
-    stats.p0.submissionRatio = Math.floor((stats.p0.submissions / stats.total.total) * 100);
-    stats.p1.submissionRatio = Math.floor((stats.p1.submissions / stats.total.total) * 100);
+    // stats.p0.captureRatio = Math.floor((stats.p0.captures / stats.total.total) * 100);
+    // stats.p1.captureRatio = Math.floor((stats.p1.captures / stats.total.total) * 100);
+
+    // stats.p0.submissionRatio = Math.floor((stats.p0.submissions / stats.total.total) * 100);
+    // stats.p1.submissionRatio = Math.floor((stats.p1.submissions / stats.total.total) * 100);
 
     console.table(stats);
     // console.log(stats);
@@ -196,7 +182,7 @@ function play(players) {
 }
 
 function main() {
-    performace(1000);
+    performace(100);
     // play([
     //     new HardLogicPlayer(`HardLogicPlayer1`, false),
     //     new HardLogicPlayer(`HardLogicPlayer2`, true)
