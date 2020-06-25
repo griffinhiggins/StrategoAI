@@ -1,0 +1,94 @@
+[blue, red] = [false, true];
+playerList = [
+    [
+        new RegularPlayer(`RegularPlayer0`, blue),
+        new RegularPlayer(`RegularPlayer1`, red)
+    ],
+    [
+        new RegularPlayer(`RegularPlayer0`, blue),
+        new RandomPlayer(`RandomPlayer1`, red)
+    ],
+    [
+        new RegularPlayer(`RegularPlayer0`, blue),
+        new HardLogicPlayer(`HardLogicPlayer1`, red)
+    ],
+    [
+        new RandomPlayer(`RandomPlayer0`, blue),
+        new RandomPlayer(`RandomPlayer1`, red)
+    ],
+    [
+        new RandomPlayer(`RandomPlayer0`, blue),
+        new HardLogicPlayer(`HardLogicPlayer1`, red)
+    ],
+    [
+        new HardLogicPlayer(`HardLogicPlayer0`, blue),
+        new HardLogicPlayer(`HardLogicPlayer1`, red)
+    ]
+];
+
+
+
+
+
+    // stats.playerStats.total.captures = stats.playerStats.p0.captures + stats.playerStats.p1.captures;
+    // stats.playerStats.total.submissions = stats.playerStats.p0.submissions + stats.playerStats.p1.submissions;
+    // stats.playerStats.total.total = stats.playerStats.total.captures + stats.playerStats.total.submissions;
+
+    // stats.playerStats.total.captureRatio = Math.floor((stats.playerStats.total.captures / stats.playerStats.total.total) * 100);
+    // stats.playerStats.total.submissionRatio = Math.floor((stats.playerStats.total.submissions / stats.playerStats.total.total) * 100);
+
+    // stats.playerStats.p0.captureRatio = Math.floor((stats.playerStats.p0.captures / stats.playerStats.total.total) * 100);
+    // stats.playerStats.p1.captureRatio = Math.floor((stats.playerStats.p1.captures / stats.playerStats.total.total) * 100);
+
+    // stats.playerStats.p0.submissionRatio = Math.floor((stats.playerStats.p0.submissions / stats.playerStats.total.total) * 100);
+    // stats.playerStats.p1.submissionRatio = Math.floor((stats.playerStats.p1.submissions / stats.playerStats.total.total) * 100);
+
+
+
+
+
+    move(board) {
+        let orig,
+            dest,
+            temp = null,
+            diff,
+            rank,
+            row0,
+            col0,
+            row1,
+            col1,
+            this.moves = this.moves.filter(m => {
+
+                [row0, col0] = m.orig;
+                orig = board[row0][col0];
+
+                m.dests = m.dests.filter(d => {
+
+                    [row1, col1] = d;
+                    dest = board[row1][col1];
+
+                    if (dest == ``) {
+                        empty = [
+                            [row0, col0],
+                            [row1, col1]
+                        ];
+                        return true;
+                    } else if ((rank = dest.getRank()) == null) {
+                        return false;
+                    } else {
+                        if (orig.rank > rank && rank != 1) {
+                            bestMove = diff;
+                            temp = [
+                                [row0, col0],
+                                [row1, col1]
+                            ];
+                        }
+                    }
+                    return true
+                });
+                if (m.dests.length > 0) {
+                    return true;
+                }
+            });
+        return (temp != null) ? temp : this.moveRandom();
+    }
