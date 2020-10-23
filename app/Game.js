@@ -72,22 +72,20 @@ class Game {
     });
   }
   test() {
-    let p = this.players;
-
-    //*TEST: orig rank = 3 || 4 && dest rank ==  1 --> PASS
-    this.board.place(p[1], [p[1].getPieceByRank(8), 3, 6]);
-    this.board.place(p[1], [p[1].getPieceByRank(7), 3, 8]);
-    this.board.place(p[1], [p[1].getPieceByRank(2), 4, 1]);
-    this.board.place(p[1], [p[1].getPieceByRank(8), 2, 1]);
-    this.board.place(p[1], [p[1].getPieceByRank(3), 3, 0]);
-    this.board.place(p[0], [p[0].getPieceByRank(5), 3, 1]);
-    this.board.place(p[0], [p[0].getPieceByRank(7), 3, 7]);
-    this.board.board[3][8].showRank = true;
-    this.board.board[3][0].showRank = true;
-    this.board.board[4][1].showRank = true;
-    this.board.board[3][6].showRank = true;
-    this.board.board[2][1].showRank = true;
-
+    // let p = this.players;
+    // TEST: orig rank = 3 || 4 && dest rank ==  1 --> PASS
+    // this.board.place(p[1], [p[1].getPieceByRank(8), 3, 6]);
+    // this.board.place(p[1], [p[1].getPieceByRank(7), 3, 8]);
+    // this.board.place(p[1], [p[1].getPieceByRank(2), 4, 1]);
+    // this.board.place(p[1], [p[1].getPieceByRank(8), 2, 1]);
+    // this.board.place(p[1], [p[1].getPieceByRank(3), 3, 0]);
+    // this.board.place(p[0], [p[0].getPieceByRank(5), 3, 1]);
+    // this.board.place(p[0], [p[0].getPieceByRank(7), 3, 7]);
+    // this.board.board[3][8].showRank = true;
+    // this.board.board[3][0].showRank = true;
+    // this.board.board[4][1].showRank = true;
+    // this.board.board[3][6].showRank = true;
+    // this.board.board[2][1].showRank = true;
     //!TEST IF A SPY HITS A BOMB THAT IT changes the showRank to true
   }
   play() {
