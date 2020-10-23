@@ -23,6 +23,7 @@ class RegularPlayer extends Player {
       [row0, col0] = orig,
       row1,
       col1;
+    //LETS USERS ENTER (u,d,l,r) OR (x,y) COORDINATES
     switch (dest) {
       case `u`:
         row1 = row0 - 1;

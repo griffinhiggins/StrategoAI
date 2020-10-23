@@ -1,6 +1,7 @@
 const clc = require(`cli-color`);
-const EMPTY = ``;
-const [FLAG, BOMB, MINER, MARSHAL, SPY] = [0, 1, 3, 10, 11];
+const EMPTY = ``,
+  [FLAG, BOMB, MINER, MARSHAL, SPY] = [0, 1, 3, 10, 11];
+
 class Board {
   constructor() {
     this.board = [
@@ -40,7 +41,7 @@ class Board {
     }
     //! UNCOMMENT IN PROD
     // else if (temp.color == true && !temp.showRank && !win) {
-    //     str = ` ? `
+    //   str = ` ? `;
     // }
     //! UNCOMMENT IN PROD
     else {
