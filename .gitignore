@@ -1,4 +1,3 @@
 app/temp
-app/Data/
-app/node_modules
-img
+app/**/Data/
+app/**/node_modules
