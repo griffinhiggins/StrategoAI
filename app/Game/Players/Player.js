@@ -1,18 +1,23 @@
-const [Piece, Data, clc, prompt] = [
-  require(`../components/Piece`),
-  require(`../Data/Data`),
-  require(`cli-color`),
-  require(`prompt-sync`)({
-    history: require(`prompt-sync-history`)(`moves.txt`, 10),
-    sigint: true,
-  }),
-];
+const
+  [
+    Piece,
+    Data,
+    clc,
+    prompt
+  ] = [
+      require(`../Components/Piece`),
+      require(`../Score`),
+      require(`cli-color`),
+      require(`prompt-sync`)({
+        history: require(`prompt-sync-history`)(`moves.txt`, 10),
+        sigint: true,
+      }),
+    ];
+
 class Player {
   constructor(name, color) {
     this.color = color;
-    this.name = this.colorStr(
-      name == `` ? prompt(`What is your name? `) : name,
-    );
+    this.name = this.colorStr(name == `` ? prompt(`What is your name? `) : name);
     this.inactive = [];
     this.numPerRank = [];
     this.moves = [];
@@ -32,9 +37,9 @@ class Player {
   getPieceByRank(rank) {
     for (let i = 0; i < this.inactive.length; i++) {
       if (this.inactive[i].rank == rank) {
-        let temp = this.inactive[i];
+        let piece = this.inactive[i];
         this.inactive.splice(i, 1);
-        return temp;
+        return piece;
       }
     }
     return null;

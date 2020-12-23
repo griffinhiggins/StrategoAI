@@ -1,5 +1,6 @@
-const clc = require(`cli-color`);
-const EMPTY = ``,
+const
+  clc = require(`cli-color`),
+  EMPTY = ``,
   [FLAG, BOMB, MINER, MARSHAL, SPY] = [0, 1, 3, 10, 11];
 
 class Board {
@@ -18,7 +19,7 @@ class Board {
     ];
     this.length = 10;
   }
-  print(stats, win) {
+  printBoard(stats, win) {
     let row,
       grid = `      0  1  2  3  4  5  6  7  8  9\t\tSCORE BOARD\n      -  -  -  -  -  -  -  -  -  -${stats[0]}\n`;
     for (let i = 0; i < 10; i++) {
@@ -40,9 +41,9 @@ class Board {
       return `   `;
     }
     //! UNCOMMENT IN PROD
-    // else if (temp.color == true && !temp.showRank && !win) {
-    //   str = ` ? `;
-    // }
+    else if (temp.color == true && !temp.showRank && !win) {
+      str = ` ? `;
+    }
     //! UNCOMMENT IN PROD
     else {
       switch (temp.rank) {
@@ -96,9 +97,9 @@ class Board {
   }
   move(origPlayer, destPlayer) {
     let [[row0, col0], [row1, col1]] = origPlayer.move(
-        this.board,
-        destPlayer.numPerRank,
-      ),
+      this.board,
+      destPlayer.numPerRank,
+    ),
       orig = this.board[row0][col0],
       dest = this.board[row1][col1];
 
@@ -134,22 +135,17 @@ class Board {
     } else if (row0 != row1 && col0 != col1) {
       console.log(clc.red.bold(`Pieces cannot be move diagonialy`));
       return false;
-    } else if (
-      orig.rank > 2 &&
-      (Math.abs(col0 - col1) > 1 || Math.abs(row0 - row1) > 1)
-    ) {
+    } else if (orig.rank > 2 && (Math.abs(col0 - col1) > 1 || Math.abs(row0 - row1) > 1)) {
       console.log(
         clc.red.bold(
-          `Only Scout's can move more than 1 space (scouts are the same as a castle in chess)`,
+          `Only Scout's can move more than 1 space (scouts are the same as a rook in chess)`,
         ),
       );
       return false;
     } else if (dest.color == orig.color) {
       console.log(
         clc.red.bold(
-          `The piece you are trying to move at ${(row0, col0)} to ${
-            (row1, col1)
-          } is occupied by the same color piece`,
+          `The piece you are trying to move at ${(row0, col0)} to ${(row1, col1)} is occupied by the same color piece`,
         ),
       );
       return false;
@@ -215,34 +211,22 @@ class Board {
         temp = this.board[i][j];
         if (temp != EMPTY && temp.rank > 1 && temp.color == player.color) {
           if (this.inBounds(i - 1, j)) {
-            if (
-              this.board[i - 1][j] == EMPTY ||
-              this.board[i - 1][j].color != this.board[i][j].color
-            ) {
+            if (this.board[i - 1][j] == EMPTY || this.board[i - 1][j].color != this.board[i][j].color) {
               dests.push([i - 1, j]);
             }
           }
           if (this.inBounds(i + 1, j)) {
-            if (
-              this.board[i + 1][j] == EMPTY ||
-              this.board[i + 1][j].color != this.board[i][j].color
-            ) {
+            if (this.board[i + 1][j] == EMPTY || this.board[i + 1][j].color != this.board[i][j].color) {
               dests.push([i + 1, j]);
             }
           }
           if (this.inBounds(i, j - 1)) {
-            if (
-              this.board[i][j - 1] == EMPTY ||
-              this.board[i][j - 1].color != this.board[i][j].color
-            ) {
+            if (this.board[i][j - 1] == EMPTY || this.board[i][j - 1].color != this.board[i][j].color) {
               dests.push([i, j - 1]);
             }
           }
           if (this.inBounds(i, j + 1)) {
-            if (
-              this.board[i][j + 1] == EMPTY ||
-              this.board[i][j + 1].color != this.board[i][j].color
-            ) {
+            if (this.board[i][j + 1] == EMPTY || this.board[i][j + 1].color != this.board[i][j].color) {
               dests.push([i, j + 1]);
             }
           }

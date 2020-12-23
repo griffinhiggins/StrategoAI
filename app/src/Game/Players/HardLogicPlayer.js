@@ -1,4 +1,5 @@
 const Player = require(`./Player`);
+const io = require(`../../../Data/io`);
 class HardLogicPlayer extends Player {
   constructor(name, color) {
     super(name, color);
@@ -17,15 +18,13 @@ class HardLogicPlayer extends Player {
         empty: [],
         draw: [],
         unknown: [],
-      },
-      elements = 0,
-      total = 0;
+      };
 
-    this.moves.forEach((m) => {
+    this.moves.forEach(m => {
       [row0, col0] = m.orig;
       orig = board[row0][col0];
 
-      m.dests.forEach((d) => {
+      m.dests.forEach(d => {
         [row1, col1] = d;
         dest = board[row1][col1];
 
@@ -62,25 +61,19 @@ class HardLogicPlayer extends Player {
         }
       });
     });
-
     moves.win.sort((i, j) => j.score - i.score);
     moves.lose.sort((i, j) => j.score - i.score);
 
-    // console.log(moves);
+    // let data = io.read()
 
     let temp = null,
-      score = 0,
-      found = false,
-      set = null;
+      score = 0;
 
     if (moves.lose.length) {
       if (moves.win.length) {
         moves.lose.forEach((l) => {
           moves.win.forEach((w) => {
-            if (
-              JSON.stringify(l.orig) === JSON.stringify(w.orig) &&
-              l.score + w.score > score
-            ) {
+            if (JSON.stringify(l.orig) === JSON.stringify(w.orig) && l.score + w.score > score) {
               score = l.score + w.score;
               temp = [w.orig, w.dest];
             }
@@ -90,10 +83,7 @@ class HardLogicPlayer extends Player {
       if (moves.empty.length) {
         moves.lose.forEach((l) => {
           moves.empty.forEach((e) => {
-            if (
-              JSON.stringify(l.orig) === JSON.stringify(e.orig) &&
-              l.score + e.score > score
-            ) {
+            if (JSON.stringify(l.orig) === JSON.stringify(e.orig) && l.score + e.score > score) {
               score = l.score + e.score;
               temp = [e.orig, e.dest];
             }
@@ -103,10 +93,7 @@ class HardLogicPlayer extends Player {
       if (moves.unknown.length) {
         moves.lose.forEach((l) => {
           moves.unknown.forEach((u) => {
-            if (
-              JSON.stringify(l.orig) === JSON.stringify(u.orig) &&
-              l.score + u.score > score
-            ) {
+            if (JSON.stringify(l.orig) === JSON.stringify(u.orig) && l.score + u.score > score) {
               score = l.score + u.score;
               temp = [u.orig, u.dest];
             }
@@ -116,22 +103,14 @@ class HardLogicPlayer extends Player {
       if (moves.draw.length) {
         moves.lose.forEach((l) => {
           moves.draw.forEach((d) => {
-            if (
-              JSON.stringify(l.orig) === JSON.stringify(d.orig) &&
-              l.score + d.score > score
-            ) {
+            if (JSON.stringify(l.orig) === JSON.stringify(d.orig) && l.score + d.score > score) {
               score = l.score + d.score;
               temp = [d.orig, d.dest];
             }
           });
         });
       }
-      return temp == null
-        ? [
-            moves.lose[moves.lose.length - 1].orig,
-            moves.lose[moves.lose.length - 1].dest,
-          ]
-        : temp;
+      return temp == null ? [moves.lose[moves.lose.length - 1].orig, moves.lose[moves.lose.length - 1].dest] : temp;
     }
     if (moves.win.length) {
       return [moves.win[0].orig, moves.win[0].dest];

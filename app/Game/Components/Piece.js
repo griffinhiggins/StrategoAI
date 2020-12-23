@@ -12,8 +12,7 @@ class Piece {
     return this.showRank ? this.rank : null;
   }
   setPosition(row, col) {
-    this.row = row;
-    this.col = col;
+    [this.row, this.col] = [row, col]
   }
   getPosition() {
     return [this.row, this.col];
