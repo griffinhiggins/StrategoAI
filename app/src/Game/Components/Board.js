@@ -40,11 +40,9 @@ class Board {
     } else if (temp == EMPTY) {
       return `   `;
     }
-    //! UNCOMMENT IN PROD
     else if (temp.color == true && !temp.showRank && !win) {
       str = ` ? `;
     }
-    //! UNCOMMENT IN PROD
     else {
       switch (temp.rank) {
         case 0:

@@ -1,6 +1,6 @@
 const Player = require(`./Player`);
-const io = require(`../../../Data/io`);
-class HardLogicPlayer extends Player {
+// const io = require(`../../../Data/io`);
+class SimpleHardLogicPlayer extends Player {
   constructor(name, color) {
     super(name, color);
   }
@@ -12,7 +12,7 @@ class HardLogicPlayer extends Player {
       col0,
       row1,
       col1,
-      moves = {
+      actions = {
         lose: [],
         win: [],
         empty: [],
@@ -27,33 +27,32 @@ class HardLogicPlayer extends Player {
       m.dests.forEach(d => {
         [row1, col1] = d;
         dest = board[row1][col1];
-
         if (dest == ``) {
-          moves.empty.push({
+          actions.empty.push({
             orig: [row0, col0],
             dest: [row1, col1],
             score: 0,
           });
         } else if ((rank = dest.getRank()) == null) {
-          moves.unknown.push({
+          actions.unknown.push({
             orig: [row0, col0],
             dest: [row1, col1],
             score: this.getPercent(orig.rank, destPlayerRanks), //have a function that predicts what the peice rank is
           });
         } else if (orig.rank > rank) {
-          moves.win.push({
+          actions.win.push({
             orig: [row0, col0],
             dest: [row1, col1],
             score: rank,
           });
         } else if (orig.rank < rank) {
-          moves.lose.push({
+          actions.lose.push({
             orig: [row0, col0],
             dest: [row1, col1],
             score: orig.rank,
           });
         } else {
-          moves.draw.push({
+          actions.draw.push({
             orig: [row0, col0],
             dest: [row1, col1],
             score: 0,
@@ -61,18 +60,20 @@ class HardLogicPlayer extends Player {
         }
       });
     });
-    moves.win.sort((i, j) => j.score - i.score);
-    moves.lose.sort((i, j) => j.score - i.score);
+    actions.win.sort((i, j) => j.score - i.score);
+    actions.lose.sort((i, j) => j.score - i.score);
 
-    // let data = io.read()
+    // let data = io.read(`../Data/actions.json`);
+    // data.push(actions);
+    // io.write(`../Data/actions.json`, data);
 
     let temp = null,
       score = 0;
 
-    if (moves.lose.length) {
-      if (moves.win.length) {
-        moves.lose.forEach((l) => {
-          moves.win.forEach((w) => {
+    if (actions.lose.length) {
+      if (actions.win.length) {
+        actions.lose.forEach((l) => {
+          actions.win.forEach((w) => {
             if (JSON.stringify(l.orig) === JSON.stringify(w.orig) && l.score + w.score > score) {
               score = l.score + w.score;
               temp = [w.orig, w.dest];
@@ -80,9 +81,9 @@ class HardLogicPlayer extends Player {
           });
         });
       }
-      if (moves.empty.length) {
-        moves.lose.forEach((l) => {
-          moves.empty.forEach((e) => {
+      if (actions.empty.length) {
+        actions.lose.forEach((l) => {
+          actions.empty.forEach((e) => {
             if (JSON.stringify(l.orig) === JSON.stringify(e.orig) && l.score + e.score > score) {
               score = l.score + e.score;
               temp = [e.orig, e.dest];
@@ -90,9 +91,9 @@ class HardLogicPlayer extends Player {
           });
         });
       }
-      if (moves.unknown.length) {
-        moves.lose.forEach((l) => {
-          moves.unknown.forEach((u) => {
+      if (actions.unknown.length) {
+        actions.lose.forEach((l) => {
+          actions.unknown.forEach((u) => {
             if (JSON.stringify(l.orig) === JSON.stringify(u.orig) && l.score + u.score > score) {
               score = l.score + u.score;
               temp = [u.orig, u.dest];
@@ -100,9 +101,9 @@ class HardLogicPlayer extends Player {
           });
         });
       }
-      if (moves.draw.length) {
-        moves.lose.forEach((l) => {
-          moves.draw.forEach((d) => {
+      if (actions.draw.length) {
+        actions.lose.forEach((l) => {
+          actions.draw.forEach((d) => {
             if (JSON.stringify(l.orig) === JSON.stringify(d.orig) && l.score + d.score > score) {
               score = l.score + d.score;
               temp = [d.orig, d.dest];
@@ -110,22 +111,22 @@ class HardLogicPlayer extends Player {
           });
         });
       }
-      return temp == null ? [moves.lose[moves.lose.length - 1].orig, moves.lose[moves.lose.length - 1].dest] : temp;
+      return temp == null ? [actions.lose[actions.lose.length - 1].orig, actions.lose[actions.lose.length - 1].dest] : temp;
     }
-    if (moves.win.length) {
-      return [moves.win[0].orig, moves.win[0].dest];
+    if (actions.win.length) {
+      return [actions.win[0].orig, actions.win[0].dest];
     }
-    if (moves.empty.length) {
-      let num = Math.floor(Math.random() * moves.empty.length);
-      return [moves.empty[num].orig, moves.empty[num].dest];
+    if (actions.empty.length) {
+      let num = Math.floor(Math.random() * actions.empty.length);
+      return [actions.empty[num].orig, actions.empty[num].dest];
     }
-    if (moves.unknown.length) {
-      let num = Math.floor(Math.random() * moves.unknown.length);
-      return [moves.unknown[num].orig, moves.unknown[num].dest];
+    if (actions.unknown.length) {
+      let num = Math.floor(Math.random() * actions.unknown.length);
+      return [actions.unknown[num].orig, actions.unknown[num].dest];
     }
-    if (moves.draw.length) {
-      let num = Math.floor(Math.random() * moves.draw.length);
-      return [moves.draw[num].orig, moves.draw[num].dest];
+    if (actions.draw.length) {
+      let num = Math.floor(Math.random() * actions.draw.length);
+      return [actions.draw[num].orig, actions.draw[num].dest];
     }
 
     return this.moveRand();
@@ -151,4 +152,4 @@ class HardLogicPlayer extends Player {
     return temp;
   }
 }
-module.exports = HardLogicPlayer;
+module.exports = SimpleHardLogicPlayer;

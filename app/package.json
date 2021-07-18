@@ -11,10 +11,8 @@
   "dependencies": {
     "clear": "^0.1.0",
     "cli-color": "^2.0.0",
+    "fs": "^0.0.1-security",
     "prompt-sync": "^4.2.0",
     "prompt-sync-history": "^1.0.1"
-  },
-  "devDependencies": {
-    "jsdoc": "^3.6.6"
   }
 }

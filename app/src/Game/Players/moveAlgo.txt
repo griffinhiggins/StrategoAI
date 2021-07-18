@@ -1,0 +1,34 @@
+move()
+        actions <- {
+            empty   <- []
+            unknown <- []
+            win     <- []
+            lose    <- []
+            draw    <- []
+        }
+        foreach move in moves
+
+
+SimpleHardLogicPlayer:
+    move()
+        actions <- {
+            empty   <- []
+            unknown <- []
+            win     <- []
+            lose    <- []
+            draw    <- []
+        }
+        foreach move in moves
+            if move.destination is empty
+                actions.empty.push(move.destination)
+            else if move.destination.rank is null
+                actions.unknown.push(move.destination)
+            else if move.origin.rank is greater than move.destination.rank
+                actions.win.push(move.destination)
+            else if move.origin.rank is less than move.destination.rank
+                actions.lose.push(move.destination)
+            else
+                draw.push(move.destination)
+        actions.win.sort(desc)
+        actions.lose.sort(asc)
+        if 
